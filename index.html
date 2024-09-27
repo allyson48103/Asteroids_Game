@@ -1,0 +1,118 @@
+<!-- ====================== EECS 493 Assignment 2 Starter Code ====================== -->
+<html>
+
+<head>
+  <title>Asteroids</title>
+  <!-- JS -->
+  <script src='scripts/jquery.min.js'></script>
+  <script src='scripts/page.js'></script>
+  <!-- CSS -->
+  <link rel="stylesheet" type="text/css" href="style/index.css">
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+</head>
+
+<!-- HTML -->
+<body>
+  <div class='outer-container'>
+    <header>
+      <h1>Asteroids</h1>
+      <img class="left-asteroid" src="src/asteroid.png" alt="Left Asteroid">
+      <img class="right-asteroid" src="src/asteroid.png" alt="Right Asteroid">
+    </header>
+    <div class='game-window'>
+      <!-- Main Menu -->
+      <div id="main-menu" class="menu">
+        <header>
+          <h1>Asteroids</h1>
+          <img class="left-asteroid" src="src/asteroid.png" alt="Left Asteroid">
+          <img class="right-asteroid" src="src/asteroid.png" alt="Right Asteroid">
+        </header>
+        <div class="menu-buttons">
+          <button id="play-game" class="menu-btn">Play game!</button>
+          <button id="open-settings" class="menu-btn">Settings</button>
+        </div>
+      </div>
+
+
+      <!-- Settings Panel -->
+      <div id="settings-panel" class="menu hidden">
+        <h1>Settings</h1>
+        <div class="volume-control">
+          <label for="volume-slider">Volume: <span id="volume-value">50</span></label>
+          <input id="volume-slider" type="range" min="1" max="100" value="50">
+        </div>
+          <h1>Difficulty</h1>
+          <div class="difficulty-control">
+          <button id="easy" class="difficulty-btn">Easy</button>
+          <button id="normal" class="difficulty-btn selected">Normal</button>
+          <button id="hard" class="difficulty-btn">Hard</button>
+        </div>
+        <button id="close-settings" class="menu-btn">Close</button>
+      </div>
+
+      <!-- Tutorial Page -->
+      <div id="tutorial-page" class="menu hidden">
+        <h2>How to play</h2>
+        <p>
+            <strong>Avoid</strong> <em>asteroids</em>!
+            <div> <img class="tutorial-image" src="src/asteroid.png" alt="Asteroid"> </div>
+        </p>
+        <p>
+            <strong>Collect</strong> <em>shields</em>! <strong>Travel</strong> through <em>portals</em> to the next level!
+            <div> <img class="tutorial-image" src="src/shield.gif" alt="Shield">
+            <img class="tutorial-image" src="src/port.gif" alt="Portal"> </div>
+        </p>
+        <p><strong>Gain</strong> as many <em>points</em> as possible!</p>
+
+        <button id="start-game" class="menu-btn">Start</button>
+      </div>
+
+      <!-- Actual Game -->
+      <div id="actual-game">
+
+        <!-- Get Ready -->
+        <div id="getready-page" class="menu hidden">
+          <h1><strong>Get Ready!</strong></h1>
+          <div> <img class="arrowkeys-image" src="src/arrowkeys.png" alt="Arrowkeys"> </div>
+          <p> Use arrow keys to move. </p>
+        </div>
+
+        <!-- Player (Rocket) -->
+        <div id="player" class="player">
+          <img src="src/player.gif" alt="Player">
+        </div>
+
+        <!-- Asteroids -->
+        <div class="asteroidSection">
+        </div>
+
+        <!-- Shields -->
+        <div class="shieldSection">
+        </div>
+
+        <!-- Portals -->
+        <div class="portalSection">
+        </div>
+        
+        <!-- Score Panel -->
+        <div class="scorePanel hidden">
+          <div class="score">Score: <span id="score-value">0</span></div>
+          <div class="danger">Danger: <span id="danger-value">10</span></div>
+          <div class="level">Level: <span id="level-value">1</span></div>
+        </div>
+
+      </div>
+      
+      <!-- Game Over Screen -->
+      <div id="gameover-page" class="menu hidden">
+        <h1>Game Over!</h1>
+        <p>You have to fix your spaceship!</p>
+        <div class="game-over-score">Your Score: <span id="final-score">0</span></div>
+        <button id="restart-game" class="menu-btn">Start Over</button>
+      </div>
+    
+    </div> <!-- end game-window -->
+  </div> <!-- end outer-container -->
+</body>
+
+</html>
