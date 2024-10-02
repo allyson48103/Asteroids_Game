@@ -107,6 +107,8 @@ $(document).ready(function () {
       $tutorialPage.removeClass('hidden');
     } else {
       $getreadypage.removeClass('hidden');
+      $scorePanel.removeClass('hidden');
+      $scorePanel.show();
       setTimeout(function () {
         $getreadypage.addClass('hidden');
         startGame();
