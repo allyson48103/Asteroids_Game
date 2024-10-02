@@ -38,7 +38,7 @@
       <div id="settings-panel" class="menu hidden">
         <h1>Settings</h1>
         <div class="volume-control">
-          <label for="volume-slider">Volume: <span id="volume-value">50</span></label>
+          <label for="volume-slider"><strong>Volume:</strong> <span id="volume-value">50</span></label>
           <input id="volume-slider" type="range" min="1" max="100" value="50">
         </div>
           <h1>Difficulty</h1>
@@ -50,6 +50,18 @@
         <button id="close-settings" class="menu-btn">Close</button>
       </div>
 
+       <!-- Game Over Screen -->
+       <div id="gameover" class="menu hidden">
+        GAME OVER!
+        <br><br>
+        YOU HAVE TO FIX YOUR SPACESHIP!
+        <br><br>
+        <div id="final_score">0</div>
+        <br>
+        <button class="tart" onclick="startOver()">Start Over</button>
+      </div>
+
+  
       <!-- Tutorial Page -->
       <div id="tutorial-page" class="menu hidden">
         <h2>How to play</h2>
@@ -67,49 +79,39 @@
         <button id="start-game" class="menu-btn">Start</button>
       </div>
 
+      <!-- Score Panel -->
+       <div class="scorePanel hidden">
+        <div class="score">Score: <span id="score-value">0</span></div>
+        <div class="danger">Danger: <span id="danger-value">10</span></div>
+        <div class="level">Level: <span id="level-value">1</span></div>
+      </div>
+
+      <!-- Get Ready -->
+      <div id="getready-page" class="menu hidden">
+        <h1><strong>Get Ready!</strong></h1>
+        <div> <img class="arrowkeys-image" src="src/arrowkeys.png" alt="Arrowkeys"> </div>
+        <p> Use arrow keys to move. </p>
+      </div>
+
       <!-- Actual Game -->
-      <div id="actual-game">
+      <div id="actual-game" class="menu hidden">
 
-        <!-- Get Ready -->
-        <div id="getready-page" class="menu hidden">
-          <h1><strong>Get Ready!</strong></h1>
-          <div> <img class="arrowkeys-image" src="src/arrowkeys.png" alt="Arrowkeys"> </div>
-          <p> Use arrow keys to move. </p>
-        </div>
+          <!-- Player (Rocket) -->
+          <div id="player">
+            <img class="player_img" src="src/player/player.gif">
+          </div>
 
-        <!-- Player (Rocket) -->
-        <div id="player" class="player">
-          <img src="src/player.gif" alt="Player">
-        </div>
-
-        <!-- Asteroids -->
-        <div class="asteroidSection">
-        </div>
-
-        <!-- Shields -->
-        <div class="shieldSection">
-        </div>
-
-        <!-- Portals -->
-        <div class="portalSection">
-        </div>
-        
-        <!-- Score Panel -->
-        <div class="scorePanel hidden">
-          <div class="score">Score: <span id="score-value">0</span></div>
-          <div class="danger">Danger: <span id="danger-value">10</span></div>
-          <div class="level">Level: <span id="level-value">1</span></div>
-        </div>
+          <!-- Asteroids -->
+          <div id="asteroidSection">
+            <div class="curAstroid"> </div>
+            <div class="curShield"> </div>
+            <div class="curPortal"> </div>
+          </div>
 
       </div>
+
       
-      <!-- Game Over Screen -->
-      <div id="gameover-page" class="menu hidden">
-        <h1>Game Over!</h1>
-        <p>You have to fix your spaceship!</p>
-        <div class="game-over-score">Your Score: <span id="final-score">0</span></div>
-        <button id="restart-game" class="menu-btn">Start Over</button>
-      </div>
+      
     
     </div> <!-- end game-window -->
   </div> <!-- end outer-container -->
