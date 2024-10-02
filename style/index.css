@@ -287,9 +287,10 @@ header img.right-asteroid {
 
 #player {
   position: absolute;
-  top: 300px;  /* Initial Y-position */
-  left: 500px; /* Initial X-position */
-  z-index: 10;
+  width: 62px;
+  left: 600px;
+  top: 300px;
+  z-index: 9;
 }
 
 .shieldSection, .portalSection {
@@ -305,51 +306,6 @@ header img.right-asteroid {
 .shieldSection img, .portalSection img {
   width: 100%;
   height: 100%;
-}
-
-#gameover-page {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  color: white;
-  text-align: center;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-}
-
-#gameover-page h1 {
-  font-size: 75px;
-  margin-bottom: 20px;
-}
-
-#gameover-page p {
-  font-size: 40px;
-  margin-bottom: 20px;
-}
-
-.game-over-score {
-  font-size: 50px;
-  margin: 20px 0;
-}
-
-#restart-game {
-  width: 200px;
-  height: 75px;
-  background-color: transparent;
-  color: white;
-  border: 2px solid white;
-  border-radius: 5px;
-  text-align: center;
-}
-
-#restart-game:hover {
-  background-color: lightgray;
-  color: black;
 }
 
 .curAsteroid {
@@ -373,6 +329,28 @@ header img.right-asteroid {
   width: 50px;
   height: 50px;
 }
+
+
+#gameover {
+  height: 250px;
+  width: 500px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: darkslateblue;
+  font-size: 30px;
+  color: gainsboro !important;
+  text-align: center;
+  padding-top: 20px;
+  z-index: 1;
+}
+
+.start{
+  background-color: gainsboro;
+  color: black;
+}
+
 
 .hidden {
   display: none !important;
