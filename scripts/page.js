@@ -5,6 +5,7 @@
 let astProjectileSpeed = 3;            // easy: 1, norm: 3, hard: 5
 
 // Game Object Helpers
+var numGame = 1;
 let currentAsteroid = 1;
 const AST_OBJECT_REFRESH_RATE = 15;
 const maxPersonPosX = 1218;
@@ -39,6 +40,11 @@ $(document).ready(function () {
   const $difficultyButtons = $('.difficulty-btn');
   const $getreadypage = $('#getready-page');
   const $scorePanel = $('.scorePanel');
+  const $actualGame = $('#actual-game');
+  const $gameOver = $('#gameover');
+  $("#player").hide();
+  player = $('#player');
+
 
   let scoreInterval; // Variable to hold the interval ID for score updates
   let difficulty = 'normal'; // Default difficulty
@@ -64,12 +70,16 @@ $(document).ready(function () {
   $tutorialPage.addClass('hidden');
   $getreadypage.addClass('hidden');
   $scorePanel.addClass('hidden');
+  $actualGame.addClass('hidden');
+  $gameOver.addClass('hidden');
 
-  // Transition from main menu to tutorial page when "Play game!" is clicked
+  // Transition from main menu to tutorial page when "Play game!" is clicked if 1st time
   $playGameBtn.on('click', function () {
     $mainMenu.addClass('hidden');
     $settingsPanel.addClass('hidden');
-    $tutorialPage.removeClass('hidden');
+    if(numGame <=1){
+      $tutorialPage.removeClass('hidden');
+    }
   });
 
   // Transition from main menu to settings panel when "Settings" is clicked
@@ -114,6 +124,8 @@ $(document).ready(function () {
 
   $startGameBtn.on('click', function () {
    
+    console.log("Start button clicked");  // Add this for debugging
+
     // Ensure difficulty is set to 'normal' if no difficulty has been chosen
     if (!difficulty) {
       difficulty = 'normal';  // Default to normal difficulty
@@ -137,9 +149,20 @@ $(document).ready(function () {
     }, 3000);
   });
   
+  // TODO:
   // Function to start the actual gameplay
+  // separate functions to update s ore, create comets, check collisions
+  // separate fuction to spawn shields and portals
+  // add a move player function (which attaches img attr)
+
+  // entiire separate endGame function (refer)
+
   function startGame() {
+  
     console.log("Game Started");
+    $actualGame.removeClass('hidden');
+
+    numGame++;
 
     // Initialize score, danger, and level based on difficulty
     score = 0;
