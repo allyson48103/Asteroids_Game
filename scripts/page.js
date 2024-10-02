@@ -637,6 +637,7 @@ function removeallComets() {
 
 
 function startOver() {
+  isgameover = false;
   score = 0;
   level = 1;
   if (difficulty === 'easy') {
