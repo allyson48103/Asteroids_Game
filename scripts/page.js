@@ -195,7 +195,8 @@ $(document).ready(function () {
   // entiire separate endGame function (refer)
 
   function startGame() {
-  
+    isgameover = false;
+
     console.log("Game Started");
     $actualGame.removeClass('hidden');
     $("#player").css({ 'left': '600px', 'top': '300px' });
@@ -639,7 +640,7 @@ function removeallComets() {
 
 
 function startOver() {
-  isgameover = false;
+  isgameover = false; // NEED
   score = 0;
   level = 1;
   if (difficulty === 'easy') {
