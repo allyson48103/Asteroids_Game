@@ -1,4 +1,4 @@
-/* ------------------- EECS 493 Assignment 3 Starter Code ------------------ */
+ /* ------------------- EECS 493 Assignment 3 Starter Code ------------------ */
 
 /* ------------------------ GLOBAL HELPER VARAIBLES ------------------------ */
 // Difficulty Helpers
@@ -7,6 +7,8 @@ let astProjectileSpeed = 3;            // easy: 1, norm: 3, hard: 5
 // Game Object Helpers
 var numGame = 1;
 let currentAsteroid = 1;
+let collisionInterval;
+let scoreInterval;
 let spawn_rate = 800;               // easy: 1000, median: 800, hard: 600
 let AST_OBJECT_REFRESH_RATE = 15;
 const maxPersonPosX = 1218;
@@ -22,9 +24,9 @@ var finalScore;
 var isgameover = false;
 var score = 0;
 var danger = 20;
+var level = 1;
 var scorevalue;
-var difficulty;
-
+var difficulty = 'normal';
 
 // shield
 let hasShield = false;
@@ -77,16 +79,10 @@ $(document).ready(function () {
   player = $('#player');
 
 
-  let scoreInterval; // Variable to hold the interval ID for score updates
-  let difficulty = 'normal'; // Default difficulty
-  let astProjectileSpeed = 3;
-  let collisionInterval;
+ 
 
 
-  // Global variables for game state
-  let score = 0;
-  let danger = 20;  // Starting danger level for normal difficulty
-  let level = 1;
+
 
   finalScore.html(score);
 
@@ -106,8 +102,15 @@ $(document).ready(function () {
   $playGameBtn.on('click', function () {
     $mainMenu.addClass('hidden');
     $settingsPanel.addClass('hidden');
-    if(numGame <=1){
+    
+    if (numGame <= 1) {
       $tutorialPage.removeClass('hidden');
+    } else {
+      $getreadypage.removeClass('hidden');
+      setTimeout(function () {
+        $getreadypage.addClass('hidden');
+        startGame();
+      }, 3000);
     }
   });
 
@@ -594,6 +597,9 @@ function endGame() {
   astProjectileSpeed = 0;
   moving = false; // Stops player movement
 
+  finalScore.html(score); 
+
+
   window.setTimeout("removeallComets();", 2000);
   window.setTimeout("gameOver();", 2000);
 
@@ -614,6 +620,8 @@ function removeAllAsteroids() {
 
 function gameOver() {
   console.log('Final Score:', score);  // Check the score here
+  finalScore.html(score);
+
   // Hide the game elements and show the Game Over screen
   $scorePanel.addClass('hidden');
   $actualGame.addClass('hidden');
@@ -660,13 +668,11 @@ function startOver() {
   $('.shield').remove();
   $('.portal').remove();
 
-  $("#gameover").hide();
-  $("#main-menu").show();
-  $(".menu-buttons").show();
-
+  
   $("#gameover").addClass('hidden');
   $("#main-menu").removeClass('hidden');
   $(".menu-buttons").show();
+  $("#main-menu").removeClass('hidden');
 }
 
 
@@ -710,5 +716,4 @@ function playDieSound() {
  4. 
  - lastly add shields / portals (edit code eas)
 */ 
-
 
