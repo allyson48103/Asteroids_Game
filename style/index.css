@@ -235,13 +235,27 @@ header img.right-asteroid {
 }
 
 #actual-game {
+  visibility: visible !important;
+  width: 100%;
+  height: 100%;
+  background-color: gainsboro !important;
+}
+
+#play-game{
+  background-color: darkslateblue;
+  z-index: 100;
+}
+
+#play-game-screen{
   background-color: gainsboro;
+  z-index: 100;
 }
 
 #getready-page {
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: gainsboro;
   justify-content: center;
   height: 100%;
   padding: 10px;
