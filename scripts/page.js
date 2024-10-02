@@ -1,4 +1,4 @@
- /* ------------------- EECS 493 Assignment 3 Starter Code ------------------ */
+/* ------------------- EECS 493 Assignment 3 Starter Code ------------------ */
 
 /* ------------------------ GLOBAL HELPER VARAIBLES ------------------------ */
 // Difficulty Helpers
@@ -670,7 +670,7 @@ function startOver() {
 
   
   $("#gameover").addClass('hidden');
-  $("#main-menu").removeClass('hidden');
+  $("#gameover").remove();
   $(".menu-buttons").show();
   $("#main-menu").removeClass('hidden');
 }
