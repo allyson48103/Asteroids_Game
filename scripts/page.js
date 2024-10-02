@@ -17,6 +17,14 @@ const portalGone = 5000;               // portal disappears in 5 seconds
 const shieldOccurrence = 10000;        // shield spawns every 10 seconds
 const shieldGone = 5000;               // shield disappears in 5 seconds
 var asteroidInterval;
+var moving = true;
+var finalScore;
+var isgameover = false;
+var score = 0;
+var danger = 20;
+var scorevalue;
+var difficulty;
+
 
 // shield
 let hasShield = false;
@@ -57,6 +65,9 @@ $(document).ready(function () {
    $scorePanel = $('.scorePanel');
    $actualGame = $('#actual-game');
    $gameOver = $('#gameover');
+   finalScore = $('#final_score');
+   scorevalue = $('#score-value');
+
 
   game_window = $('.game-window');
   game_screen = $('#actual-game');
@@ -76,6 +87,9 @@ $(document).ready(function () {
   let score = 0;
   let danger = 20;  // Starting danger level for normal difficulty
   let level = 1;
+
+  finalScore.html(score);
+
 
   // ====== EVENT HANDLERS ======
 
@@ -179,8 +193,11 @@ $(document).ready(function () {
   
     console.log("Game Started");
     $actualGame.removeClass('hidden');
+    $("#player").css({ 'left': '600px', 'top': '300px' });
+
 
     numGame++;
+    moving = true;
 
     // Initialize score, danger, and level based on difficulty
     score = 0;
@@ -195,26 +212,27 @@ $(document).ready(function () {
 
     // Start updating the score only after the game starts
     scoreInterval = setInterval(function() {
-      score += 40;  // Increase score by 40 every 500 milliseconds
-      updateScorePanel();
+      if (!isgameover){
+        score += 40;  // Increase score by 40 every 500 milliseconds
+        console.log("Score: ", score);  // Check if the score increments
+
+        updateScorePanel();
+      }
     }, 500);
 
     // Continuously check for collisions
     collisionInterval = setInterval(checkCollisions, 50);  // Start checking for collisions
-  }
+    
+    finalScore.html(score);
+    $(".player_img").attr('src', 'src/player.gif');
+    $("#player").show();
 
-  // Function to stop the score updates (useful when game ends)
-  function stopScoreUpdates() {
-    clearInterval(scoreInterval);
-  }
 
-  function stopCollisions() {
-    clearInterval(collisionInterval);  // Stop checking collisions when the game ends
   }
 
   // Function to update the score, danger, and level on the UI
   function updateScorePanel() {
-    $('#score-value').text(score);
+    scorevalue.text(score);
     $('#danger-value').text(danger);
     $('#level-value').text(level);
   }
@@ -283,7 +301,6 @@ class Asteroid {
     this.cur_y += this.y_dest * astProjectileSpeed;
     this.cur_x += this.x_dest * astProjectileSpeed;
 
-    console.log(this.cur_x, this.cur_y)
 
     // update asteroid's css position
     this.id.css('top', this.cur_y);
@@ -458,23 +475,41 @@ $(document).keyup(function (e) {
 });
 
 // Move player based on key inputs
+// Move player based on key inputs and change image direction
 function movePlayer() {
-  if (LEFT && playerX > 0) playerX -= PERSON_SPEED;
-  if (RIGHT && playerX < maxPersonPosX) playerX += PERSON_SPEED;
-  if (UP && playerY > 0) playerY -= PERSON_SPEED;
-  if (DOWN && playerY < maxPersonPosY) playerY += PERSON_SPEED;
-  $('#player').css({ top: playerY + 'px', left: playerX + 'px' });
+
+  if (moving){
+    if (LEFT && playerX > 0) {
+      playerX -= PERSON_SPEED;
+      $(".player_img").attr('src', 'src/player_left.gif'); // Update to left-moving image
+    }
+    if (RIGHT && playerX < maxPersonPosX) {
+      playerX += PERSON_SPEED;
+      $(".player_img").attr('src', 'src/player_right.gif'); // Update to right-moving image
+    }
+    if (UP && playerY > 0) {
+      playerY -= PERSON_SPEED;
+      $(".player_img").attr('src', 'src/player_up.gif'); // Update to upward-moving image
+    }
+    if (DOWN && playerY < maxPersonPosY) {
+      playerY += PERSON_SPEED;
+      $(".player_img").attr('src', 'src/player_down.gif'); // Update to downward-moving image
+    }
+    $('#player').css({ top: playerY + 'px', left: playerX + 'px' });
+  }
 }
 
-// Run this function continuously to keep the player moving
+// Run this function continuously to keep the player moving and update the image
 setInterval(movePlayer, 20);  // 50 times per second (20ms)
 
 
 // --- Asteroid Spawning
 function spawnAsteroids() {
-  asteroidInterval = setInterval(function () {
-    spawn();
-  }, spawn_rate);  // Spawn asteroid every 1 second
+  if(!isgameover){
+    asteroidInterval = setInterval(function () {
+      spawn();
+    }, spawn_rate);  // Spawn asteroid every 1 second
+  }
 }
 
 
@@ -503,18 +538,28 @@ function startShieldsAndPortals() {
   setInterval(spawnPortal, portalOccurrence);
 }
 
+//TODO : next create endgame page -> shields -> protals
 
 // --- Collisions
 function checkCollisions() {
-  $('.curAsteroid').each(function () {
-    if (isColliding($('#player'), $(this))) {
+  $(".curAsteroid").children("div").each(function () {
+      if (isColliding($("#player"), $(this)) == true) {
+      // player die image
+      $(".player_img").attr('src', 'src/player_touched.gif');
+      moving = false;
+      playDieSound();
+      endGame();
+
+      // TODO: call endgame()
+      /*
       if (hasShield) {
         hasShield = false;
         $('#player').attr('src', 'src/player.gif');  // Revert to non-shielded appearance
-      } else {
+      } 
+      else {
         playDieSound();  // Play die sound when the player dies
         //gameOver();  // Call the gameOver function when the player has no shield
-      }
+      }*/
     }
   });
   
@@ -542,43 +587,68 @@ function checkCollisions() {
 // Call this function continuously to check for collisions
 setInterval(checkCollisions, 50);
 
-/*
+
 // --- Score and game state updates
-function gameOver() {
-  // Stop the game (stop asteroids, stop score updates)
-  //stopScoreUpdates();
-  stopAsteroidSpawning();
-  stopCollisions();
+function endGame() {
+  isgameover = true;
+  astProjectileSpeed = 0;
+  moving = false; // Stops player movement
 
-  // Show the final score on the Game Over screen
-  $('#final-score').text(score);
+  window.setTimeout("removeallComets();", 2000);
+  window.setTimeout("gameOver();", 2000);
 
-  // Hide the game elements and show the Game Over screen
-  $('#actual-game').addClass('hidden');
-  $('#gameover-page').removeClass('hidden');
-}*/
+  // TODO: score isn't supposed to be counting anymore
 
-$('#restart-game').on('click', function() {
-  // Restart the game by going back to the main menu
-  $('#gameover-page').addClass('hidden');
-  $('#main-menu').removeClass('hidden');
-  
-  // Ensure settings (difficulty, volume) stay the same
-  // You might want to call any function that reinitializes the game state
-  resetGameState();  // Make sure this resets score/level, but keeps settings intact
-});
-
-
-// Stop asteroids from spawning when the game ends
-function stopAsteroidSpawning() {
-  clearInterval(asteroidInterval);
+  // Stop asteroid and player movement
+  clearInterval(collisionInterval); // Stop checking for collisions
+  clearInterval(asteroidInterval); // Stop spawning new asteroids
+  clearInterval(scoreInterval); // Stop updating the score
+ 
 }
 
-function resetGameState() {
+function removeAllAsteroids() {
+  $(".curAsteroid").children("div").each(function () {
+    $(this).remove();
+  }); // Remove all asteroid elements from the DOM
+}
+
+function gameOver() {
+  console.log('Final Score:', score);  // Check the score here
+  // Hide the game elements and show the Game Over screen
+  $scorePanel.addClass('hidden');
+  $actualGame.addClass('hidden');
+  $gameOver.removeClass('hidden');
+}
+
+
+function removeallComets() {
+  $(".curAsteroid").children("div").each(function () {
+    $(this).remove();
+  });
+}
+
+
+function startOver() {
   score = 0;
-  danger = 20;  // or the starting danger based on difficulty
   level = 1;
-  hasShield = false;
+  if (difficulty === 'easy') {
+    danger = 10;
+    astProjectileSpeed = 1;  // Easy asteroid speed
+    spawn_rate = 1000;
+  } else if (difficulty === 'normal') {
+    danger = 20;
+    astProjectileSpeed = 3;  // Normal asteroid speed
+    spawn_rate = 800;
+  } else if (difficulty === 'hard') {
+    danger = 30;
+    astProjectileSpeed = 5;  // Hard asteroid speed
+    spawn_rate = 600;
+  }
+
+  $('#score-value').text(score);
+  $('final_score').text(score);
+  $('#danger-value').text(danger);
+  $('#level-value').text(level);
   
   // Reset player position
   playerX = 500;
@@ -589,9 +659,14 @@ function resetGameState() {
   $('.curAsteroid').remove();
   $('.shield').remove();
   $('.portal').remove();
-  
-  // Reset scoreboard
-  updateScorePanel();
+
+  $("#gameover").hide();
+  $("#main-menu").show();
+  $(".menu-buttons").show();
+
+  $("#gameover").addClass('hidden');
+  $("#main-menu").removeClass('hidden');
+  $(".menu-buttons").show();
 }
 
 
@@ -635,3 +710,5 @@ function playDieSound() {
  4. 
  - lastly add shields / portals (edit code eas)
 */ 
+
+
