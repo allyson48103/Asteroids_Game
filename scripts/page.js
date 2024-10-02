@@ -7,7 +7,8 @@ let astProjectileSpeed = 3;            // easy: 1, norm: 3, hard: 5
 // Game Object Helpers
 var numGame = 1;
 let currentAsteroid = 1;
-const AST_OBJECT_REFRESH_RATE = 15;
+let spawn_rate = 800;               // easy: 1000, median: 800, hard: 600
+let AST_OBJECT_REFRESH_RATE = 15;
 const maxPersonPosX = 1218;
 const maxPersonPosY = 658;
 const PERSON_SPEED = 5;                // #pixels each time player moves by
@@ -15,6 +16,20 @@ const portalOccurrence = 15000;        // portal spawns every 15 seconds
 const portalGone = 5000;               // portal disappears in 5 seconds
 const shieldOccurrence = 10000;        // shield spawns every 10 seconds
 const shieldGone = 5000;               // shield disappears in 5 seconds
+var asteroidInterval;
+
+// shield
+let hasShield = false;
+
+// Div handlers
+let asteroid_section;
+let game_screen;
+let game_window;
+
+
+// Define audio objects for each sound effect
+let collectSound = new Audio('src/audio/collect.mp3');
+let dieSound = new Audio('src/audio/die.mp3');
 
 // Movement Helpers
 let LEFT = false;
@@ -28,34 +43,34 @@ let DOWN = false;
 /* --------------------------------- MAIN ---------------------------------- */
 $(document).ready(function () {
   // JQUERY SELECTORS
-  const $mainMenu = $('#main-menu');
-  const $settingsPanel = $('#settings-panel');
-  const $tutorialPage = $('#tutorial-page');
-  const $playGameBtn = $('#play-game');
-  const $settingsBtn = $('#open-settings');
-  const $closeSettingsBtn = $('#close-settings');
-  const $startGameBtn = $('#start-game');
-  const $volumeSlider = $('#volume-slider');
-  const $volumeValue = $('#volume-value');
-  const $difficultyButtons = $('.difficulty-btn');
-  const $getreadypage = $('#getready-page');
-  const $scorePanel = $('.scorePanel');
-  const $actualGame = $('#actual-game');
-  const $gameOver = $('#gameover');
+   $mainMenu = $('#main-menu');
+   $settingsPanel = $('#settings-panel');
+   $tutorialPage = $('#tutorial-page');
+   $playGameBtn = $('#play-game');
+   $settingsBtn = $('#open-settings');
+   $closeSettingsBtn = $('#close-settings');
+   $startGameBtn = $('#start-game');
+   $volumeSlider = $('#volume-slider');
+   $volumeValue = $('#volume-value');
+   $difficultyButtons = $('.difficulty-btn');
+   $getreadypage = $('#getready-page');
+   $scorePanel = $('.scorePanel');
+   $actualGame = $('#actual-game');
+   $gameOver = $('#gameover');
+
+  game_window = $('.game-window');
+  game_screen = $('#actual-game');
+  asteroid_section = $('.curAsteroid');
+
   $("#player").hide();
   player = $('#player');
 
 
   let scoreInterval; // Variable to hold the interval ID for score updates
   let difficulty = 'normal'; // Default difficulty
-  let hasShield = false;
   let astProjectileSpeed = 3;
-  let asteroidInterval;
   let collisionInterval;
 
-  // Define audio objects for each sound effect
-  let collectSound = new Audio('src/audio/collect.mp3');
-  let dieSound = new Audio('src/audio/die.mp3');
 
   // Global variables for game state
   let score = 0;
@@ -110,12 +125,15 @@ $(document).ready(function () {
     if (difficulty === 'easy') {
       danger = 10;
       astProjectileSpeed = 1;  // Easy asteroid speed
+      spawn_rate = 1000;
     } else if (difficulty === 'normal') {
       danger = 20;
       astProjectileSpeed = 3;  // Normal asteroid speed
+      spawn_rate = 800;
     } else if (difficulty === 'hard') {
       danger = 30;
       astProjectileSpeed = 5;  // Hard asteroid speed
+      spawn_rate = 600;
     }
 
     // Immediately update the scoreboard to reflect the selected danger level
@@ -225,7 +243,7 @@ class Asteroid {
   constructor() {
     /*------------------------Public Member Variables------------------------*/
     // create a new Asteroid div and append it to DOM so it can be modified later
-    const objectString = "<div id = 'a-" + currentAsteroid + "' class = 'curAsteroid' > <img src = 'src/asteroid.png'/></div>";
+    let objectString = "<div id = 'a-" + currentAsteroid + "' class = 'curAsteroid' > <img src = 'src/asteroid.png'/></div>";
     asteroid_section.append(objectString);
     // select id of this Asteroid
     this.id = $('#a-' + currentAsteroid);
@@ -264,9 +282,13 @@ class Asteroid {
     // ensures all asteroids travel at current level's speed
     this.cur_y += this.y_dest * astProjectileSpeed;
     this.cur_x += this.x_dest * astProjectileSpeed;
+
+    console.log(this.cur_x, this.cur_y)
+
     // update asteroid's css position
     this.id.css('top', this.cur_y);
     this.id.css('right', this.cur_x);
+    
   }
 
   // Requires: this method should ONLY be called by the constructor
@@ -349,13 +371,12 @@ class Asteroid {
 
 // Spawns an asteroid travelling from one border to another
 function spawn() {
-  console.log("spawning asteroid")
-  const asteroid = new Asteroid();
+  let asteroid = new Asteroid();
   setTimeout(spawn_helper(asteroid), 0);
 }
 
 function spawn_helper(asteroid) {
-  const astermovement = setInterval(function () {
+  let astermovement = setInterval(function () {
     // update Asteroid position on screen
     asteroid.updatePosition();
     // determine whether Asteroid has reached its end position
@@ -453,7 +474,7 @@ setInterval(movePlayer, 20);  // 50 times per second (20ms)
 function spawnAsteroids() {
   asteroidInterval = setInterval(function () {
     spawn();
-  }, 1000);  // Spawn asteroid every 1 second
+  }, spawn_rate);  // Spawn asteroid every 1 second
 }
 
 
@@ -492,7 +513,7 @@ function checkCollisions() {
         $('#player').attr('src', 'src/player.gif');  // Revert to non-shielded appearance
       } else {
         playDieSound();  // Play die sound when the player dies
-        gameOver();  // Call the gameOver function when the player has no shield
+        //gameOver();  // Call the gameOver function when the player has no shield
       }
     }
   });
@@ -521,11 +542,11 @@ function checkCollisions() {
 // Call this function continuously to check for collisions
 setInterval(checkCollisions, 50);
 
-
+/*
 // --- Score and game state updates
 function gameOver() {
   // Stop the game (stop asteroids, stop score updates)
-  stopScoreUpdates();
+  //stopScoreUpdates();
   stopAsteroidSpawning();
   stopCollisions();
 
@@ -535,7 +556,7 @@ function gameOver() {
   // Hide the game elements and show the Game Over screen
   $('#actual-game').addClass('hidden');
   $('#gameover-page').removeClass('hidden');
-}
+}*/
 
 $('#restart-game').on('click', function() {
   // Restart the game by going back to the main menu
@@ -552,27 +573,6 @@ $('#restart-game').on('click', function() {
 function stopAsteroidSpawning() {
   clearInterval(asteroidInterval);
 }
-
-
-function gameOver() {
-  // Stop the game (stop asteroids, stop score updates)
-  stopScoreUpdates();
-  stopAsteroidSpawning();
-
-  // Show the final score on the Game Over screen
-  $('#final-score').text(score);
-
-  // Hide the game elements and show the Game Over screen
-  $('#actual-game').addClass('hidden');
-  $('#gameover-page').removeClass('hidden');
-}
-
-$('#restart-game').on('click', function() {
-  // Restart the game
-  $('#gameover-page').addClass('hidden');
-  $('#actual-game').removeClass('hidden');
-  startGame();  // Call your function to restart the game
-});
 
 function resetGameState() {
   score = 0;
