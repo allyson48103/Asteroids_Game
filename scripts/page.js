@@ -105,13 +105,13 @@ $(document).ready(function () {
     
     if (numGame <= 1) {
       $tutorialPage.removeClass('hidden');
-    } else {
-      $getreadypage.removeClass('hidden');
-      setTimeout(function () {
-        $getreadypage.addClass('hidden');
-        startGame();
-      }, 3000);
-    }
+    } 
+    $getreadypage.removeClass('hidden');
+    setTimeout(function () {
+      $getreadypage.addClass('hidden');
+      startGame();
+    }, 3000);
+    
   });
 
   // Transition from main menu to settings panel when "Settings" is clicked
