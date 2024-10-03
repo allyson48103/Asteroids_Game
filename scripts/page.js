@@ -11,6 +11,7 @@ let collisionInterval;
 let scoreInterval;
 let spawn_rate = 800;               // easy: 1000, median: 800, hard: 600
 let AST_OBJECT_REFRESH_RATE = 15;
+let personinv;
 const maxPersonPosX = 1218;
 const maxPersonPosY = 658;
 const PERSON_SPEED = 5;                // #pixels each time player moves by
@@ -207,6 +208,7 @@ $(document).ready(function () {
 
     console.log("Game Started");
     $actualGame.removeClass('hidden');
+    $("#player").show()
     $("#player").css({ 'left': '600px', 'top': '300px' });
 
 
@@ -263,8 +265,10 @@ $(document).ready(function () {
 // TODO; clear shieldInt
 function Shield() {
   shieldInt = setInterval(function () {
-    createShield();
-    window.setTimeout("removeShield()", 5000);
+    if (isgameover == false){
+      createShield();
+      window.setTimeout("removeShield()", 5000);
+    }
   }, 10000);
 }
 
@@ -301,8 +305,10 @@ function removeShield() {
 // TODO: clear portalInt
 function Portal() {
   portalInt = setInterval(function () {
-    createPortal();
-    window.setTimeout("removePortal()", 5000);
+    if (isgameover == false){
+      createPortal();
+      window.setTimeout("removePortal()", 5000);
+    }
   }, 15000);
 }
 
@@ -613,7 +619,7 @@ function movePlayer() {
 
 
 // Run this function continuously to keep the player moving and update the image
-setInterval(movePlayer, 20);  // 50 times per second (20ms)
+personinv = setInterval(movePlayer, 20);  // 50 times per second (20ms)
 
 
 // --- Asteroid Spawning
@@ -687,6 +693,9 @@ function endGame() {
 
 
   window.setTimeout("removeallComets();", 2000);
+  window.setTimeout("removeallShields();", 2000);
+  window.setTimeout("removeallPortals();", 2000);
+
   window.setTimeout("gameOver();", 2000);
 
   // TODO: score isn't supposed to be counting anymore
@@ -699,6 +708,8 @@ function endGame() {
   clearInterval(portalInt);
   clearInterval(shieldcollinv);
   clearInterval(portcollinv);
+  clearInterval(personinv);
+
  
 }
 
@@ -716,6 +727,20 @@ function gameOver() {
 
 function removeallComets() {
   $(".curAsteroid").children("div").each(function () {
+    $(this).remove();
+  });
+}
+
+
+function removeallShields() {
+  $(".curShield").children("div").each(function () {
+    $(this).remove();
+  });
+}
+
+
+function removeallPortals() {
+  $(".curPortal").children("div").each(function () {
     $(this).remove();
   });
 }
