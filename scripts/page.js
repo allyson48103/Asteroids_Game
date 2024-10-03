@@ -208,7 +208,6 @@ $(document).ready(function () {
 
     console.log("Game Started");
     $actualGame.removeClass('hidden');
-    $("#player").show()
     $("#player").css({ 'left': '600px', 'top': '300px' });
 
 
