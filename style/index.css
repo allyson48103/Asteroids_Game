@@ -326,6 +326,8 @@ header img.right-asteroid {
   height: 62px;
   left: -20px;
   top: -15px;
+  bottom: 30px;
+  right: -15px;
 }
 
 #curPortal {
