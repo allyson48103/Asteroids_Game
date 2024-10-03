@@ -27,12 +27,16 @@ var danger = 20;
 var level = 1;
 var scorevalue;
 var difficulty = 'normal';
+var portcollinv;
 
 // shield
-let hasShield = false;
+var shield = false;
+var shieldcollinv;
 
 // Div handlers
 let asteroid_section;
+let shield_section;
+let portal_section;
 let game_screen;
 let game_window;
 
@@ -73,7 +77,9 @@ $(document).ready(function () {
 
   game_window = $('.game-window');
   game_screen = $('#actual-game');
-  asteroid_section = $('.curAsteroid');
+  asteroid_section = $('.curAsteroid'); // on screen asteroid
+  shield_section = $('.curShield'); //on screen shield
+  portal_section = $('.curPortal'); // on screen portal
 
   $("#player").hide();
   player = $('#player');
@@ -196,6 +202,8 @@ $(document).ready(function () {
 
   function startGame() {
     isgameover = false;
+    score = 0;
+    level = 1;
 
     console.log("Game Started");
     $actualGame.removeClass('hidden');
@@ -205,16 +213,14 @@ $(document).ready(function () {
     numGame++;
     moving = true;
 
-    // Initialize score, danger, and level based on difficulty
-    score = 0;
-    level = 1;
-
     // Update the scoreboard immediately to reflect initial values
     updateScorePanel();
 
     // Start asteroid spawning, shields, and portals
     spawnAsteroids();
-    startShieldsAndPortals();
+    Shield();
+    Portal();
+    $(".player_img").attr('src', 'src/player.gif');
 
     // Start updating the score only after the game starts
     scoreInterval = setInterval(function() {
@@ -230,7 +236,6 @@ $(document).ready(function () {
     collisionInterval = setInterval(checkCollisions, 50);  // Start checking for collisions
     
     finalScore.html(score);
-    $(".player_img").attr('src', 'src/player.gif');
     $("#player").show();
 
 
@@ -254,8 +259,90 @@ $(document).ready(function () {
 
 });
 
+/* --------- SHIELD ------- */
+// TODO; clear shieldInt
+function Shield() {
+  shieldInt = setInterval(function () {
+    createShield();
+    window.setTimeout("removeShield()", 5000);
+  }, 10000);
+}
+
+function createShield() {
+  //$('.curShield').show();
+  let shield = " <img id = 'curShield' src = 'src/shield.gif'/>";
+  shield_section.append(shield);
+
+  let y = getRandomNumber(0, 640);
+  let x = getRandomNumber(0, 1200);
+
+  $('#curShield').css('top', y);
+  $('#curShield').css('left', x);
+  checkCollShield();
+}
+
+function checkCollShield() {
+  shieldcollinv = setInterval(function () {
+    if (isColliding($("#player"), $("#curShield")) == true) {
+      removeShield();
+      shield = true;
+      collectSound.play();
+    }
+  }, 100);
+}
+
+function removeShield() {
+  shield_section.children("img").remove();
+  clearInterval(shieldcollinv);
+}
 
 
+/* --------- PORTAL ------- */
+// TODO: clear portalInt
+function Portal() {
+  portalInt = setInterval(function () {
+    createPortal();
+    window.setTimeout("removePortal()", 5000);
+  }, 15000);
+}
+
+function createPortal() {
+  let portal = " <img id = 'curPortal' src = 'src/port.gif'/>";
+  portal_section.append(portal);
+  let y = getRandomNumber(0, 640);
+  let x = getRandomNumber(0, 1200);
+
+  $('#curPortal').css('top', y);
+  $('#curPortal').css('left', x);
+
+  checkCollPort();
+}
+
+function checkCollPort() {
+  portcollinv = setInterval(function () {
+
+    // console.log ($(this).astermovement);
+    if (isColliding($("#player"), $("#curPortal")) == true) {
+
+      //  clearInterval(astermovement);
+      level += 1;
+      danger += 2;
+      astProjectileSpeed *= 1.5;
+
+      removePortal();
+      $('#danger-value').html(danger);
+      $('#level-value').html(level);
+      collectSound.play();
+
+    }
+
+  }, 100);
+}
+
+function removePortal() {
+  portal_section.children("img").remove();
+  clearInterval(portcollinv);
+}
 
 
 // Starter code below:
@@ -480,30 +567,50 @@ $(document).keyup(function (e) {
   }
 });
 
+// TODO: fix endgame if shield
+// TODO: shield onlt spawning in top left corner
+
 // Move player based on key inputs
 // Move player based on key inputs and change image direction
 function movePlayer() {
+  let newPos;
 
-  if (moving){
-    if (LEFT && playerX > 0) {
-      playerX -= PERSON_SPEED;
-      $(".player_img").attr('src', 'src/player_left.gif'); // Update to left-moving image
+  if (moving) {
+    // Move Left
+    if (LEFT) {
+      newPos = playerX - PERSON_SPEED;
+      playerX = newPos < 0 ? 0 : newPos; // Prevent going out of bounds
+      player.css('left', playerX + 'px');
+      $(".player_img").attr('src', shield ? 'src/player_shielded_left.gif' : 'src/player_left.gif');
     }
-    if (RIGHT && playerX < maxPersonPosX) {
-      playerX += PERSON_SPEED;
-      $(".player_img").attr('src', 'src/player_right.gif'); // Update to right-moving image
+    
+    // Move Right
+    if (RIGHT) {
+      newPos = playerX + PERSON_SPEED;
+      playerX = newPos > maxPersonPosX ? maxPersonPosX : newPos;
+      player.css('left', playerX + 'px');
+      $(".player_img").attr('src', shield ? 'src/player_shielded_right.gif' : 'src/player_right.gif');
     }
-    if (UP && playerY > 0) {
-      playerY -= PERSON_SPEED;
-      $(".player_img").attr('src', 'src/player_up.gif'); // Update to upward-moving image
+    
+    // Move Up
+    if (UP) {
+      newPos = playerY - PERSON_SPEED;
+      playerY = newPos < 0 ? 0 : newPos;
+      player.css('top', playerY + 'px');
+      $(".player_img").attr('src', shield ? 'src/player_shielded_up.gif' : 'src/player_up.gif');
     }
-    if (DOWN && playerY < maxPersonPosY) {
-      playerY += PERSON_SPEED;
-      $(".player_img").attr('src', 'src/player_down.gif'); // Update to downward-moving image
+    
+    // Move Down
+    if (DOWN) {
+      newPos = playerY + PERSON_SPEED;
+      playerY = newPos > maxPersonPosY ? maxPersonPosY : newPos;
+      player.css('top', playerY + 'px');
+      $(".player_img").attr('src', shield ? 'src/player_shielded_down.gif' : 'src/player_down.gif');
     }
-    $('#player').css({ top: playerY + 'px', left: playerX + 'px' });
   }
 }
+
+
 
 // Run this function continuously to keep the player moving and update the image
 setInterval(movePlayer, 20);  // 50 times per second (20ms)
@@ -550,42 +657,18 @@ function startShieldsAndPortals() {
 function checkCollisions() {
   $(".curAsteroid").children("div").each(function () {
       if (isColliding($("#player"), $(this)) == true) {
-      // player die image
       $(".player_img").attr('src', 'src/player_touched.gif');
-      moving = false;
-      playDieSound();
-      endGame();
 
-      // TODO: call endgame()
-      /*
-      if (hasShield) {
-        hasShield = false;
-        $('#player').attr('src', 'src/player.gif');  // Revert to non-shielded appearance
-      } 
-      else {
-        playDieSound();  // Play die sound when the player dies
-        //gameOver();  // Call the gameOver function when the player has no shield
-      }*/
-    }
-  });
-  
-
-  $('.shield').each(function () {
-    if (isColliding($('#player'), $(this))) {
-      console.log('Player collected a shield!');
-      $(this).remove();  // Remove the shield
-      hasShield = true;   // Player now has a shield
-      $('#player').attr('src', 'src/player_shielded.gif');  // Change player appearance 
-      playCollectSound();  // Play collect sound
-    } 
-  });
-
-  $('.portal').each(function () {
-    if (isColliding($('#player'), $(this))) {
-      console.log('Player entered a portal!');
-      $(this).remove();  // Remove the portal
-      increaseLevel();    // Go to the next level
-      playCollectSound();  // Play collect sound
+      if (shield == true) {
+        $(".player_img").attr('src', 'src/player.gif');
+        shield = false;
+        $(this).remove();
+      }
+      else{
+        moving = false;
+        playDieSound();
+        endGame();
+      }
     }
   });
 }
@@ -612,13 +695,11 @@ function endGame() {
   clearInterval(collisionInterval); // Stop checking for collisions
   clearInterval(asteroidInterval); // Stop spawning new asteroids
   clearInterval(scoreInterval); // Stop updating the score
+  clearInterval(sheildInt);
+  clearInterval(portalInt);
+  clearInterval(shieldcollinv);
+  clearInterval(portcollinv);
  
-}
-
-function removeAllAsteroids() {
-  $(".curAsteroid").children("div").each(function () {
-    $(this).remove();
-  }); // Remove all asteroid elements from the DOM
 }
 
 function gameOver() {
@@ -629,6 +710,7 @@ function gameOver() {
   $scorePanel.addClass('hidden');
   $actualGame.addClass('hidden');
   $gameOver.removeClass('hidden');
+  $("#main-menu").removeClass('hidden');
 }
 
 
@@ -637,6 +719,9 @@ function removeallComets() {
     $(this).remove();
   });
 }
+
+// mine; danger = their: danger_num
+// mine: #danger-value = their: danger
 
 
 function startOver() {
@@ -666,11 +751,6 @@ function startOver() {
   playerX = 500;
   playerY = 300;
   $('#player').css({ top: playerY + 'px', left: playerX + 'px' });
-  
-  // Clear any remaining asteroids, shields, or portals
-  $('.curAsteroid').remove();
-  $('.shield').remove();
-  $('.portal').remove();
 
   
   $("#gameover").addClass('hidden');
