@@ -73,6 +73,7 @@ header img.left-asteroid {
   margin-left: 10px;
   max-height: 100%;
   position: absolute;
+  width: 90px;
   left: 0;
 }
 
@@ -80,6 +81,7 @@ header img.right-asteroid {
   margin-right: 10px;
   max-height: 100%;
   position: absolute;
+  width: 90px;
   right: 0;
 }
 
@@ -179,8 +181,9 @@ header img.right-asteroid {
 #tutorial-page {
   display: flex;
   flex-direction: column;
+  text-align: center;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-evenly;
   height: 100%;
   background-color: gainsboro;
   padding: 10px;
@@ -208,13 +211,15 @@ header img.right-asteroid {
   width: 70px;
   height: auto;
   vertical-align: middle;
-  margin-left: 10px;
+  margin-left: 30px;
   display: inline-block;
+  margin-top:20px;
 }
 
 .tutorial-images img {
   width: 70px;
   height: auto;
+  margin-bottom: 10px; /* Adds space below the images */
 }
 
 #start-game {
@@ -319,10 +324,8 @@ header img.right-asteroid {
   position: relative;
   width: 62px;
   height: 62px;
-  left: -17px;
+  left: -20px;
   top: -15px;
-  bottom: -17px;
-  right: -15px;
 }
 
 #curPortal {
@@ -349,10 +352,15 @@ header img.right-asteroid {
   background-color: darkslateblue;
   font-size: 30px;
   color: gainsboro !important;
+  display: flex;
   text-align: center;
-  padding-top: 20px;
+  flex-direction: column;
+  justify-content: space-evenly; /* Evenly space elements vertically */
+  align-items: center; /* Center elements horizontally */
+  padding: 20px;
   z-index: 1;
 }
+
 
 .start{
   background-color: gainsboro;
