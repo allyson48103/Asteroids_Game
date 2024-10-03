@@ -87,6 +87,8 @@ header img.right-asteroid {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  text-align: center; 
   gap: 20px;
 }
 
@@ -243,7 +245,6 @@ header img.right-asteroid {
 
 #play-game{
   background-color: darkslateblue;
-  z-index: 100;
 }
 
 #play-game-screen{
@@ -316,20 +317,27 @@ header img.right-asteroid {
 
 .curAsteroid img {
   position: relative;
-  width: 50px;
-  height: 50px;
+  width: 62px;
+  height: 62px;
+  left: -17px;
+  top: -15px;
+  bottom: -17px;
+  right: -15px;
 }
 
-.curShield img {
-  width: 50px;
-  height: 50px;
+#curPortal {
+  height: 62px;
+  width: 62px;
+  position: absolute;
+  z-index: 9;
 }
 
-.curPortal img {
-  width: 50px;
-  height: 50px;
+#curShield {
+  height: 62px;
+  width: 62px;
+  position: absolute;
+  z-index: 9;
 }
-
 
 #gameover {
   height: 250px;
