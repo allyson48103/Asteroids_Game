@@ -115,7 +115,7 @@ $(document).ready(function () {
     } else {
       $getreadypage.removeClass('hidden');
       $scorePanel.removeClass('hidden');
-      $scorePanel.show();
+      //$scorePanel.show();
       
       // EDITED: cleared the previous intervals BEFORE starting game
       if (shieldInt) {
@@ -244,7 +244,8 @@ $(document).ready(function () {
 
     // Continuously check for collisions
     collisionInterval = setInterval(checkCollisions, 50);  // Start checking for collisions
-    
+    console.log("collisionInterval set in startGame");
+
     finalScore.html(score);
     $("#player").show();
 
@@ -281,7 +282,6 @@ function Shield() {
 }
 
 function createShield() {
-  //$('.curShield').show();
   let shield = " <img id = 'curShield' src = 'src/shield.gif'/>";
   shield_section.append(shield);
 
@@ -634,6 +634,7 @@ personinv = setInterval(movePlayer, 20);  // 50 times per second (20ms)
 function spawnAsteroids() {
   if(!isgameover){
     asteroidInterval = setInterval(function () {
+      console.log("Spawning asteroid"); // Debug log
       spawn();
     }, spawn_rate);  // Spawn asteroid every 1 second
   }
@@ -669,23 +670,31 @@ function startShieldsAndPortals() {
 
 // --- Collisions
 function checkCollisions() {
-  $(".curAsteroid").children("div").each(function () {
-      if (isColliding($("#player"), $(this)) == true) {
-      $(".player_img").attr('src', 'src/player_touched.gif');
+  try {
+    console.log("checkCollisions() called"); // Confirm it's called
 
-      if (shield == true) {
-        $(".player_img").attr('src', 'src/player.gif');
-        shield = false;
-        $(this).remove();
+    $(".curAsteroid").children("div").each(function () {
+      if (isColliding($("#player"), $(this)) === true) {
+        console.log("Collision detected");
+        $(".player_img").attr("src", "src/player_touched.gif");
+
+        if (shield === true) {
+          $(".player_img").attr("src", "src/player.gif");
+          shield = false;
+          $(this).remove();
+        } else {
+          moving = false;
+          playDieSound();
+          console.log("Calling endGame()");
+          endGame();
+        }
       }
-      else{
-        moving = false;
-        playDieSound();
-        endGame();
-      }
-    }
-  });
+    });
+  } catch (error) {
+    console.error("Error in checkCollisions:", error);
+  }
 }
+
 
 // Call this function continuously to check for collisions
 setInterval(checkCollisions, 50);
@@ -693,6 +702,8 @@ setInterval(checkCollisions, 50);
 
 // --- Score and game state updates
 function endGame() {
+  console.log("endGame() called"); // Check if this is reached
+
   isgameover = true;
   astProjectileSpeed = 0;
   moving = false; // Stops player movement
@@ -710,6 +721,7 @@ function endGame() {
 
   // Stop asteroid and player movement
   clearInterval(collisionInterval); // Stop checking for collisions
+  console.log("collisionInterval cleared in endGame");
   clearInterval(asteroidInterval); // Stop spawning new asteroids
   clearInterval(scoreInterval); // Stop updating the score
 }
@@ -719,16 +731,17 @@ function gameOver() {
   finalScore.html(score);
   scorevalue.html("0"); // EDITED: helps fix the old score from showing
 
-
   // Hide the game elements and show the Game Over screen
   $scorePanel.addClass('hidden');
   $actualGame.addClass('hidden');
-  $gameOver.removeClass('hidden');
-  $("#main-menu").removeClass('hidden');
+  $("#gameover").removeClass('hidden'); // Use .removeClass('hidden') instead of .remove()
+
 }
 
 
 function removeallComets() {
+  console.log('Removing all comets...');
+
   $(".curAsteroid").children("div").each(function () {
     $(this).remove();
   });
@@ -753,6 +766,7 @@ function removeallPortals() {
 
 
 function startOver() {
+  console.log("Starting over...");
   isgameover = false; // NEED
   score = 0;
   level = 1;
@@ -782,8 +796,7 @@ function startOver() {
 
   
   $("#gameover").addClass('hidden');
-  $("#gameover").remove();
-  $(".menu-buttons").show();
+  $(".menu-buttons").removeClass('hidden');
   $("#main-menu").removeClass('hidden');
 }
 
