@@ -20,6 +20,18 @@
       <img class="right-asteroid" src="src/asteroid.png" alt="Right Asteroid">
     </header>
     <div class='game-window'>
+
+      <!-- Game Over Screen -->
+      <div id="gameover" class="menu hidden"> <!-- changed to class menu--->
+        GAME OVER!
+        <br><br>
+        YOU HAVE TO FIX YOUR SPACESHIP!
+        <br><br>
+        <div id="final_score">0</div>
+        <br>
+        <button class="start" onclick="startOver()">Start Over</button>
+      </div>
+
       <!-- Main Menu -->
       <div id="main-menu" class="menu">
         <header>
@@ -49,19 +61,6 @@
         </div>
         <button id="close-settings" class="menu-btn">Close</button>
       </div>
-
-       <!-- Game Over Screen -->
-        <div id="gameover" class="menu hidden">
-          GAME OVER!
-          <br><br>
-          YOU HAVE TO FIX YOUR SPACESHIP!
-          <br><br>
-          <div id="final_score">0</div>
-          <br>
-          <button class="start" onclick="startOver()">Start Over</button>
-        </div>
-
-
   
       <!-- Tutorial Page -->
       <div id="tutorial-page" class="menu hidden">
