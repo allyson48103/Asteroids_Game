@@ -766,6 +766,11 @@ function removeallPortals() {
 
 
 function startOver() {
+
+  $("#gameover").addClass('hidden');
+  $(".menu-buttons").removeClass('hidden');
+  $("#main-menu").removeClass('hidden');
+  
   console.log("Starting over...");
   isgameover = false; // NEED
   score = 0;
@@ -793,11 +798,6 @@ function startOver() {
   playerX = 500;
   playerY = 300;
   $('#player').css({ top: playerY + 'px', left: playerX + 'px' });
-
-  
-  $("#gameover").addClass('hidden');
-  $(".menu-buttons").removeClass('hidden');
-  $("#main-menu").removeClass('hidden');
 }
 
 
