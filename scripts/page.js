@@ -116,6 +116,15 @@ $(document).ready(function () {
       $getreadypage.removeClass('hidden');
       $scorePanel.removeClass('hidden');
       $scorePanel.show();
+      
+      // EDITED: cleared the previous intervals BEFORE starting game
+      if (shieldInt) {
+        clearInterval(shieldInt); // Clear any previous shield intervals
+      }
+      if (portalInt ) {
+        clearInterval(portalInt); // Clear any previous portal intervals
+      }
+      
       setTimeout(function () {
         $getreadypage.addClass('hidden');
         startGame();
@@ -715,6 +724,8 @@ function endGame() {
 function gameOver() {
   console.log('Final Score:', score);  // Check the score here
   finalScore.html(score);
+  scorevalue.html("0"); // EDITED: helps fix the old score from showing
+
 
   // Hide the game elements and show the Game Over screen
   $scorePanel.addClass('hidden');
