@@ -712,13 +712,6 @@ function endGame() {
   clearInterval(collisionInterval); // Stop checking for collisions
   clearInterval(asteroidInterval); // Stop spawning new asteroids
   clearInterval(scoreInterval); // Stop updating the score
-  clearInterval(sheildInt);
-  clearInterval(portalInt);
-  clearInterval(shieldcollinv);
-  clearInterval(portcollinv);
-  clearInterval(personinv);
-
- 
 }
 
 function gameOver() {
