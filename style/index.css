@@ -252,6 +252,10 @@ header img.right-asteroid {
   background-color: darkslateblue;
 }
 
+#play-game:hover{
+  background-color: slateblue;
+}
+
 #play-game-screen{
   background-color: gainsboro;
   z-index: 100;
@@ -360,7 +364,7 @@ header img.right-asteroid {
   justify-content: space-evenly; /* Evenly space elements vertically */
   align-items: center; /* Center elements horizontally */
   padding: 20px;
-  z-index: 1;
+  z-index: 100;
 }
 
 
